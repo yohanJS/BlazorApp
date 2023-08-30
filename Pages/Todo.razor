@@ -1,6 +1,26 @@
 ﻿@page "/todo"
 
-<h3>Todo</h3>
+<!-- It will show the ToDo items that are left to be completed -->
+<h3>Todo items (@todos.Count(todo => !todo.IsDone))</h3>
+
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            @if (todo.IsDone == true)
+            {
+                @todo.Title
+                <input type="checkbox" @bind="todo.IsDone" /> 
+            }
+            else if(todo.IsDone == false)
+            {
+                @todo.Title
+                <input type="checkbox" @bind="todo.IsDone" />   
+            }
+        </li>
+       
+    }
+</ul>
 
 <input class="form-control" placeholder="Something todo" @bind="newTodo" />
 <button class="btn btn-primary mt-2" @onclick="AddTodo">Add todo</button>
@@ -9,7 +29,14 @@
 <ul class="mt-5">
     @foreach (var todo in todos)
     {
-        <li>@todo.Title</li>
+        @if (todo.IsDone == true)
+        {
+            <li><s>@todo.Title</s></li>
+        }
+        else
+        {
+            <li>@todo.Title</li>
+        }      
     }
 </ul>
 
@@ -21,13 +48,15 @@
     {
         if (!string.IsNullOrWhiteSpace(newTodo))
         {
+            //add a new ToDo item to the list
             todos.Add(new TodoItem { Title = newTodo });
+            //clear the input field
             newTodo = string.Empty;
         }
     }
     private void ClearTodoList()
     {
-        if (todos != null)
+        if (todos.Any())
         {
             todos.Clear();
         }
